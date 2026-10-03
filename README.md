@@ -1,36 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Understudy — integration gate
 
-## Getting Started
+Voice apprentice (ElevenLabs) that watches a sandbox invoice screen, asks "why" at natural pauses, and links every answer to a screenshot.
 
-First, run the development server:
+## Run (5 min)
+1. `npm install`
+2. `cp .env.example .env.local` and fill in `ELEVENLABS_API_KEY`, `ELEVENLABS_AGENT_ID`, plus `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` for vision.
+3. Create the agent in ElevenLabs using `AGENT_PROMPT.md` (enable the **skip_turn** system tool).
+4. `npm run dev` → open http://localhost:3000 in **Chrome**.
+5. Click **Share this tab** (pick *this* tab, so redaction lines up) → **Start voice**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## The gate test (pass = all 5 dots green)
+1. Change cost center 4711 → 0400, then take your hands off the keyboard and mouse and stay quiet for about 3 seconds. The agent should ask *why*.
+2. Answer out loud. Your answer appears as **EXPERT said** with a 📷. Click it to see the screenshot.
+3. Type continuously for 10 seconds. The agent must **not** speak. The "held back" counter rises.
+4. Switch Category to Capital expenditure. A **SCREEN · vision** line should appear within about 4 seconds.
+5. Hit **Off the record**. Mic is muted, no frames are captured, no events are sent. Edit a field: nothing gets logged.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Labels: app events, vision, and pause signals are logged separately from the expert's speech, and the agent prompt says they are not speech.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy
+`npx vercel` → add the same env vars in the Vercel dashboard → test mic and screen share on the https URL.
