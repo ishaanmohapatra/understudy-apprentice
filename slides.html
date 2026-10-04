@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Understudy — pitch</title>
+<style>
+  :root { --accent:#5b4bd6; --ink:#1b1b22; --mute:#6d6d78; --warn:#b45309; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:18px/1.5 system-ui,-apple-system,sans-serif; color:var(--ink); background:#fff; }
+  .slide { display:none; min-height:100vh; padding:7vh 9vw; flex-direction:column; justify-content:center; }
+  .slide.on { display:flex; }
+  h1 { font-size:44px; margin:0 0 18px; letter-spacing:-0.02em; }
+  h1 .dot { display:inline-block; width:22px; height:22px; border-radius:7px; background:var(--accent); margin-right:14px; }
+  h2 { font-size:30px; margin:0 0 16px; }
+  p, li { font-size:22px; }
+  .big { font-size:28px; line-height:1.45; max-width:22em; }
+  .mute { color:var(--mute); }
+  .quote { border-left:4px solid var(--accent); padding-left:16px; font-style:italic; font-size:24px; }
+  table { border-collapse:collapse; font-size:17px; margin-top:10px; }
+  th, td { text-align:left; padding:8px 14px; border-bottom:1px solid #e6e4df; vertical-align:top; }
+  th { color:var(--mute); font-weight:600; }
+  .modes { display:flex; gap:14px; margin-top:22px; }
+  .modes div { border:1px solid #e6e4df; border-radius:12px; padding:14px 18px; font-size:19px; }
+  .modes b { color:var(--accent); display:block; margin-bottom:4px; }
+  .flow { font-size:22px; margin-top:16px; }
+  .flow b { color:var(--accent); }
+  .proof { background:#fdf0e0; border:1px solid #f3ddbe; border-radius:12px; padding:16px 20px; margin-top:20px; font-size:21px; }
+  .count { position:fixed; bottom:16px; right:20px; color:var(--mute); font-size:14px; }
+  .hint { position:fixed; bottom:16px; left:20px; color:var(--mute); font-size:14px; }
+</style>
+</head>
+<body>
+
+<section class="slide on">
+  <h1><span class="dot"></span>Understudy</h1>
+  <p class="big"><b>Problem.</b> Sabine retires in 18 months. She's the only person who knows why
+  invoices get held, re-coded, or escalated.</p>
+  <p class="big mute">Screen recordings show <b>what</b> she does. They never capture <b>why</b> —
+  and the why is the job.</p>
+</section>
+
+<section class="slide">
+  <h2>Understudy</h2>
+  <p class="quote">“Understudy learns the judgment behind an expert's screen work,
+  then teaches the next person to make the same calls.”</p>
+  <div class="modes">
+    <div><b>1 · Teach</b>Work one normal session. It asks <i>why</i> at your pauses.</div>
+    <div><b>2 · Review</b>The answers become rules you confirm — in your own words.</div>
+    <div><b>3 · Train</b>A new hire is stopped <i>before</i> the mistake, by your words.</div>
+  </div>
+  <p class="mute" style="margin-top:18px">One link. No install. All data fictional.</p>
+</section>
+
+<section class="slide">
+  <h2>Live demo</h2>
+  <p class="flow">Capex question at a real pause → guardrail question →
+  debrief with <b>answered / deferred / unresolved</b> counters → teach-back →
+  <b>confirmed Work Map</b> → Lena's save <b>blocked in Sabine's words</b> → mastery card.</p>
+  <p class="mute">(switch to the app / video)</p>
+</section>
+
+<section class="slide">
+  <h2>The Apprentice Test</h2>
+  <table>
+    <tr><th>When to ask</th><td>Unasked event + 2.5s no input + 1.5s silence + agent quiet + 20s cooldown. Keystrokes say "don't barge in."</td></tr>
+    <tr><th>What to ask</th><td>Only why / limits / exceptions / "when do you stop and ask someone". Never what's visible. Topics never repeat — enforced in code.</td></tr>
+    <tr><th>Understood?</th><td>Every gap ends answered / deferred to a named person / unresolved — then a confirmed teach-back. Deferrals never count as answered.</td></tr>
+    <tr><th>Did they learn?</th><td>Unseen €7,200 case caught before save; hints-off solo pass; mastery per rule. One case = a result, not mastery.</td></tr>
+    <tr><th>Trust</th><td>Off-the-record kills mic+frames+events. IBAN masked <i>before</i> frames leave the browser. Keys server-side.</td></tr>
+  </table>
+</section>
+
+<section class="slide">
+  <h2>How it works</h2>
+  <p class="flow">Vision turns the screen into observations → <b>plain code</b> checks them against
+  confirmed rules → the agents only talk and ask.</p>
+  <p class="mute">Two ElevenLabs agents (interviewer + tutor, skip_turn, Expressive Mode) ·
+  Claude Haiku on frames · one careful Claude Sonnet call for the draft map ·
+  closed rule vocabulary — anything else becomes an open question, never a guess.</p>
+  <div class="proof"><b>Signature proof.</b> Sabine: “Actually, it's 4,000 now.” →
+  Work Map v2 supersedes v1 → a €4,500 invoice is blocked — <b>no code change</b>.</div>
+</section>
+
+<section class="slide">
+  <h2>Moonshot — people first, then agents</h2>
+  <p class="big">Every confirmed Work Map is a course for new hires <b>and</b> a read-only
+  rulebook an AI agent can load.</p>
+  <p class="big mute">Agents take the routine steps and stop exactly where the expert would.
+  Today: one task. Next: a living company memory that only asks about what changed.</p>
+</section>
+
+<div class="hint">← → to navigate</div>
+<div class="count"><span id="n">1</span> / 6</div>
+<script>
+  const slides=[...document.querySelectorAll(".slide")];let i=0;
+  const show=()=>{slides.forEach((s,j)=>s.classList.toggle("on",j===i));document.getElementById("n").textContent=i+1;};
+  addEventListener("keydown",e=>{if(e.key==="ArrowRight"||e.key===" ")i=Math.min(i+1,slides.length-1);else if(e.key==="ArrowLeft")i=Math.max(i-1,0);else return;show();});
+</script>
+</body>
+</html>
