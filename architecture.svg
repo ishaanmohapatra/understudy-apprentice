@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" font-family="system-ui,-apple-system,sans-serif">
+  <style>
+    .stage{fill:#f5f5f5;stroke:#e6e4df;rx:14}
+    .box{fill:#fff;stroke:#d8d6d0;rx:10}
+    .hl{fill:#edebfb;stroke:#5b4bd6}
+    .t{font-size:17px;font-weight:600;fill:#1b1b22}
+    .s{font-size:13.5px;fill:#6d6d78}
+    .lab{font-size:14px;font-weight:700;fill:#5b4bd6;letter-spacing:.3px}
+    .arrow{stroke:#9b93e8;stroke-width:2.5;fill:none;marker-end:url(#m)}
+  </style>
+  <defs><marker id="m" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#9b93e8"/></marker></defs>
+  <text x="34" y="44" font-size="24" font-weight="700" fill="#1b1b22">Expert answers become rules the tutor enforces</text>
+
+  <rect class="stage" x="30" y="70" width="1140" height="160" rx="14"/>
+  <text class="lab" x="50" y="98">1 · CAPTURE — while the expert works</text>
+  <rect class="box" x="50" y="112" width="340" height="96" rx="10"/>
+  <text class="t" x="68" y="142">Sandbox ERP</text>
+  <text class="s" x="68" y="166">Expert works, shares the tab</text>
+  <text class="s" x="68" y="186">Sensitive fields masked on-canvas</text>
+  <rect class="box" x="430" y="112" width="340" height="96" rx="10"/>
+  <text class="t" x="448" y="142">Screen events</text>
+  <text class="s" x="448" y="166">App events: exact field edits</text>
+  <text class="s" x="448" y="186">Vision: Claude Haiku frame diffs</text>
+  <rect class="box" x="810" y="112" width="340" height="96" rx="10"/>
+  <text class="t" x="828" y="142">Interviewer agent</text>
+  <text class="s" x="828" y="166">ElevenLabs Agents · Expressive Mode</text>
+  <text class="s" x="828" y="186">One why-question per pause · skip_turn</text>
+  <path class="arrow" d="M390,160 H424"/><path class="arrow" d="M770,160 H804"/>
+
+  <rect class="stage" x="30" y="250" width="1140" height="160" rx="14"/>
+  <text class="lab" x="50" y="278">2 · MAP — after the task</text>
+  <rect class="box" x="50" y="292" width="340" height="96" rx="10"/>
+  <text class="t" x="68" y="322">Session log</text>
+  <text class="s" x="68" y="346">Events, answers, screenshots</text>
+  <text class="s" x="68" y="366">Stored in the browser</text>
+  <rect class="box" x="430" y="292" width="340" height="96" rx="10"/>
+  <text class="t" x="448" y="322">Work Map builder</text>
+  <text class="s" x="448" y="346">Claude Sonnet, strict JSON</text>
+  <text class="s" x="448" y="366">Draft map + ranked gap list</text>
+  <rect class="box" x="810" y="292" width="340" height="96" rx="10"/>
+  <text class="t" x="828" y="322">Spoken debrief</text>
+  <text class="s" x="828" y="346">Asks the open gaps by voice</text>
+  <text class="s" x="828" y="366">Teach-back → expert confirms</text>
+  <path class="arrow" d="M390,340 H424"/><path class="arrow" d="M770,340 H804"/>
+  <path class="arrow" d="M980,208 V246"/>
+
+  <rect class="stage" x="30" y="430" width="1140" height="160" rx="14"/>
+  <text class="lab" x="50" y="458">3 · TEACH — the new hire</text>
+  <rect class="box hl" x="50" y="472" width="340" height="96" rx="10"/>
+  <text class="t" x="68" y="502">Confirmed Work Map</text>
+  <text class="s" x="68" y="526">Rules with quotes + frames</text>
+  <text class="s" x="68" y="546">Only confirmed rules go live</text>
+  <rect class="box" x="430" y="472" width="340" height="96" rx="10"/>
+  <text class="t" x="448" y="502">Rule checker</text>
+  <text class="s" x="448" y="526">Deterministic code, closed vocabulary</text>
+  <text class="s" x="448" y="546">Blocks a wrong save — never the LLM</text>
+  <rect class="box" x="810" y="472" width="340" height="96" rx="10"/>
+  <text class="t" x="828" y="502">Tutor agent</text>
+  <text class="s" x="828" y="526">Explains in Sabine's words</text>
+  <text class="s" x="828" y="546">Replays her screen moment</text>
+  <path class="arrow" d="M390,520 H424"/><path class="arrow" d="M770,520 H804"/>
+  <path class="arrow" d="M210,388 V468"/>
+  <text class="s" x="34" y="622">Vision turns the screen into observations · plain code checks them against confirmed rules · the agents only talk and ask.</text>
+</svg>
