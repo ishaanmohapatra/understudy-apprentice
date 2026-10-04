@@ -66,6 +66,23 @@ const PROOF_CASE: TrainCase = {
   record: { amount: 4500, itemType: "equipment", account: "4711 Opex", assetNumber: null, supplier: "Hoffmann Maschinenbau", month: "May", entity: "DE01", approval: "Standard", paymentStatus: "Scheduled" },
 };
 
+/** Typed turn: a real user message to the agent (for a hoarse expert — the
+ *  agent still speaks; the pipeline treats typed text exactly like speech). */
+function TypedTurn({ enabled, placeholder, onSend }: { enabled: boolean; placeholder: string; onSend: (t: string) => void }) {
+  const [text, setText] = useState("");
+  if (!enabled) return null;
+  const send = () => { const t = text.trim(); if (!t) return; onSend(t); setText(""); };
+  return (
+    <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+      <input style={{ flex: 1, padding: "8px 10px", border: "1px solid var(--line)", borderRadius: 8, font: "inherit" }}
+        value={text} placeholder={placeholder}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter") send(); }} />
+      <button className="btn" onClick={send}>Send</button>
+    </div>
+  );
+}
+
 let nextId = 1;
 const now = () => Date.now();
 const clock = (t: number) => new Date(t).toLocaleTimeString([], { hour12: false });
@@ -612,6 +629,8 @@ function App() {
             <div className="orbWrap"><div className={`orb ${orbState}`} aria-hidden /><div className="orbLabel" aria-live="polite">{!voiceAgent ? "Voice off — suggestions shown" : offRecord ? "Off the record" : agentMode === "speaking" ? "Speaking" : "Listening"}</div></div>
             <div className="caption" aria-live="polite">{lastAgent ?? (phase === "live" ? "Just work normally. I'll only ask when you pause." : "Click Start session, then share this tab.")}</div>
             {lastExpert && <div className="caption expertCap">“{lastExpert}”</div>}
+            <TypedTurn enabled={voiceAgent === "interviewer"} placeholder="No voice today? Type Sabine's answer…"
+              onSend={(t) => convRef.current.sendUserMessage(t)} />
             <div className="transcript">
               {transcript.map((e) => (
                 <div key={e.id} className={`line ${e.kind}`}>
@@ -642,6 +661,7 @@ function App() {
           onNextGap={nextGap}
           onTeachBack={teachBack}
           onConnectVoice={() => connectVoice("interviewer")}
+          onTypedAnswer={(t) => convRef.current.sendUserMessage(t)}
           onShot={(frameId, text, t) => setShot({ frameId, text, t })}
           onChange={(m) => setDraft(m)}
           onConfirm={confirmMap}
@@ -665,6 +685,7 @@ function App() {
           frames={frameById}
           lastAgent={lastAgent}
           onConnectVoice={() => connectVoice("tutor")}
+          onTypedAnswer={(t) => convRef.current.sendUserMessage(t)}
           onRecord={(r) => { setTrainRecord(r); setFails([]); }}
           onSave={trySave}
           onNext={nextCase}
@@ -713,6 +734,7 @@ function ReviewMode(props: {
   onNextGap: () => void;
   onTeachBack: () => void;
   onConnectVoice: () => void;
+  onTypedAnswer: (t: string) => void;
   onShot: (frameId: number, text: string, t: string) => void;
   onChange: (m: WorkMap) => void;
   onConfirm: () => void;
@@ -827,6 +849,7 @@ function ReviewMode(props: {
           {props.gapIdx < props.gaps.length && <button className="btn subtle" onClick={props.onNextGap}>Next question</button>}
           {props.voiceOn && <button className="btn" onClick={props.onTeachBack}>Teach-back (≈60s)</button>}
         </div>
+        <TypedTurn enabled={props.voiceOn} placeholder="Type Sabine's answer to the question…" onSend={props.onTypedAnswer} />
         {props.debriefAnswers.length > 0 && (
           <>
             <h4 style={{ margin: "12px 0 6px" }}>Answers captured</h4>
@@ -917,6 +940,7 @@ function TrainMode(props: {
   frames: Map<number, Frame>;
   lastAgent?: string;
   onConnectVoice: () => void;
+  onTypedAnswer: (t: string) => void;
   onRecord: (r: RecordValues) => void;
   onSave: () => void;
   onNext: () => void;
@@ -1009,7 +1033,10 @@ function TrainMode(props: {
         <div className="u-card panel" style={{ textAlign: "center" }}>
           {!props.voiceOn
             ? <button className="btn" onClick={props.onConnectVoice}>Connect tutor voice</button>
-            : <div className="caption" style={{ minHeight: 40 }}>{props.lastAgent ?? "The tutor only speaks when a confirmed rule would be broken."}</div>}
+            : <>
+                <div className="caption" style={{ minHeight: 40 }}>{props.lastAgent ?? "The tutor only speaks when a confirmed rule would be broken."}</div>
+                <TypedTurn enabled placeholder="Type Lena's reply to the tutor…" onSend={props.onTypedAnswer} />
+              </>}
         </div>
         {props.fails.map((v) => {
           const rule = ruleById(v.ruleId);
