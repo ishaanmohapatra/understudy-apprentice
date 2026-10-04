@@ -1,0 +1,107 @@
+{
+  "workMap": "invoice-processing",
+  "version": 1,
+  "supersedes": null,
+  "expert": "Sabine",
+  "confirmed": true,
+  "steps": [
+    {
+      "n": 1,
+      "title": "Code the invoice to an account",
+      "decision": "4711 Opex \u2192 0400 Capex on INV-4471",
+      "frameId": null,
+      "t": "00:03",
+      "ruleIds": [
+        "R1"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": "R1",
+      "scope": {
+        "itemType": "equipment"
+      },
+      "when": [
+        {
+          "field": "amount",
+          "op": "gt",
+          "value": 5000
+        }
+      ],
+      "require": {
+        "field": "account",
+        "value": "0400 Capex"
+      },
+      "block": "Equipment over 5,000 euros is always capex.",
+      "escalation": null,
+      "evidence": {
+        "quote": "Equipment over 5,000 euros is always capex.",
+        "source": "live question",
+        "t": "00:35",
+        "frameId": null
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "R2",
+      "scope": {
+        "itemType": "equipment"
+      },
+      "when": [
+        {
+          "field": "account",
+          "op": "eq",
+          "value": "0400 Capex"
+        },
+        {
+          "field": "assetNumber",
+          "op": "missing"
+        }
+      ],
+      "require": null,
+      "block": "No asset number, no capex booking.",
+      "escalation": "Ask the controller",
+      "evidence": {
+        "quote": "No asset number, I don't book it as capex. I ask the controller.",
+        "source": "debrief",
+        "t": "02:10",
+        "frameId": null
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "R3",
+      "scope": {
+        "supplier": "Kessler Logistik"
+      },
+      "when": [
+        {
+          "field": "month",
+          "op": "eq",
+          "value": "December"
+        }
+      ],
+      "require": {
+        "field": "paymentStatus",
+        "value": "On hold"
+      },
+      "block": "Kessler double-bills every December.",
+      "escalation": "Only the controller releases the hold",
+      "evidence": {
+        "quote": "Kessler double-bills every December.",
+        "source": "live question",
+        "t": "01:20",
+        "frameId": null
+      },
+      "status": "confirmed"
+    }
+  ],
+  "openQuestions": [
+    {
+      "q": "Is exactly 5,000 euros capex or opex?",
+      "status": "deferred",
+      "deferredTo": "the controller"
+    }
+  ]
+}
