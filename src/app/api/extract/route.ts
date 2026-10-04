@@ -40,16 +40,16 @@ export async function POST(req: Request) {
     },
     body: JSON.stringify({
       model: process.env.EXTRACTION_MODEL || "claude-sonnet-5-5",
-      max_tokens: 4000,
+      max_tokens: 6000,
       system: SYSTEM,
       messages: [{ role: "user", content: `Expert name: ${expert}\n\n<observed-session>\n${lines}\n</observed-session>\n\nReturn ONLY the JSON object.` }],
     }),
   });
   const j = await r.json();
   if (!r.ok) return Response.json({ error: JSON.stringify(j).slice(0, 400) }, { status: 502 });
-  const text: string = j.content?.[0]?.text ?? "";
+  const text: string = (j.content ?? []).map((b: { type?: string; text?: string }) => (b.type === "text" ? b.text ?? "" : "")).join("");
   const match = text.match(/\{[\s\S]*\}/);
-  if (!match) return Response.json({ error: "extraction returned no JSON" }, { status: 502 });
+  if (!match) return Response.json({ error: `no JSON in: ${text.slice(0, 300)}` }, { status: 502 });
   try {
     return Response.json({ draft: JSON.parse(match[0]) });
   } catch {
