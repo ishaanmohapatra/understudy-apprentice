@@ -1,39 +1,76 @@
-# Understudy — integration gate
+# Understudy — The AI Apprentice
 
-Voice apprentice (ElevenLabs) that watches a sandbox invoice screen, asks "why" at natural pauses, and links every answer to a screenshot.
+A voice apprentice watches an expert process supplier invoices, asks **why** at natural
+pauses, turns the answers into a confirmed **Work Map**, then coaches a new hire through
+a case the expert never showed — and stops the wrong save before it happens, in the
+expert's own words.
 
-Built on the ElevenLabs **React SDK** (`@elevenlabs/react`: `ConversationProvider` + `useConversation`). The ask/stay-quiet decision logic is pure TypeScript in `src/lib/pauseGate.ts`, unit-tested with `npm test`. No business policy (thresholds, suppliers, routes) is in the code — the agent learns those from the expert's spoken answers.
+Built for the ElevenLabs "AI Apprentice" challenge. **All data is fictional**
+(sandbox company, invoices, policies — the policies live only in the expert's head and
+the confirmed Work Map, never in this code).
 
-## Run (5 min)
-1. `npm install`
-2. `cp .env.example .env.local` and fill in `ELEVENLABS_API_KEY`, `ELEVENLABS_AGENT_ID`, plus `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` for vision.
-3. Create the agent in ElevenLabs using `AGENT_PROMPT.md` (enable the **skip_turn** system tool).
-4. `npm run dev` → open http://localhost:3000 in **Chrome**.
-5. Click **Start session** — it asks to share a tab (pick *this* tab, so redaction lines up), then connects the voice agent.
+One page, three modes: **1 · Teach Understudy → 2 · Review what it learned → 3 · Train a teammate.**
 
-## The screen
-- **Left:** the sandbox ERP (invoice queue + open invoice) — this is what gets captured. The IBAN is blacked out before any frame leaves the browser.
-- **Right:** the voice companion — an orb showing *listening / thinking / speaking*, big captions for every spoken line, and the live transcript. 📷 on a line opens the linked screen moment.
-- **Captured moments:** thumbnails under the invoice; click one to see the screenshot and the expert's words.
-- **Testing panel** (button top-right, or `Shift+T`): gate checks, timing sliders, raw event stream, debug actions, JSON export.
+## Run it (5 min)
 
-## The two pause controls
-- **Give me a moment** — recording continues (frames, events, mic all stay on), but questions are held for 60 s or until you tap it again. For when you're reading, not done.
-- **Off the record** — mic muted, no frames captured, no events sent, pending events dropped. Nothing leaves the browser until you resume.
+```bash
+npm install
+cp .env.example .env.local   # fill in the keys below
+npm run dev                  # open http://localhost:3000 in Chrome
+```
 
-## The gate test (pass = all 6 dots green in the Testing panel)
-1. Change cost center 4711 → 0400, then take your hands off the keyboard and mouse and stay quiet for about 3 seconds. The agent should ask *why*.
-2. Answer out loud. Your answer appears as **EXPERT said** with a 📷. Click it to see the screenshot.
-3. Type continuously for 10 seconds. The agent must **not** speak. The "held back" counter rises.
-4. Switch Category to Capital expenditure. A **SCREEN · vision** line should appear within about 4 seconds.
-5. Change cost center again (same field). After the next pause, no second question about it: the log shows "Topic already asked — dropped".
-6. Tap **Give me a moment**, change a field, pause: no question until the hold ends. Then **Off the record**: edit a field — nothing is logged or sent.
+Keys: `ELEVENLABS_API_KEY` + two agents created from [AGENT_PROMPT.md](AGENT_PROMPT.md)
+(`ELEVENLABS_AGENT_ID` interviewer, `ELEVENLABS_TUTOR_AGENT_ID` tutor — enable the
+**skip_turn** system tool, Expressive Mode / V3 Conversational), and `ANTHROPIC_API_KEY`
+(or `OPENAI_API_KEY`) for screen vision + Work Map extraction.
 
-Labels: app events, vision, and pause signals are logged separately from the expert's speech, and both the app signal text and the agent prompt state they are not speech.
+Without keys everything still runs honestly: questions appear as labeled on-screen
+suggestions, and the draft keeps the expert's captured answers as evidence for one-click
+rule creation instead of AI extraction. Nothing is ever simulated as if it were AI.
 
-## Automated checks
-- `npm test` — 15 unit tests on the pause/cooldown/topic-suppression logic (`src/lib/pauseGate.test.ts`)
-- `npx tsc --noEmit`, `npm run lint`, `npm run build` — all clean
+## The demo flow
+
+1. **Teach** — Start session (share *this* tab so the IBAN is masked before any frame
+   leaves the browser). Process the three invoices like a normal day; answer the spoken
+   why-questions; *Give me a moment* holds questions, *Off the record* stops capture
+   entirely. Finish.
+2. **Review** — one careful model call drafts the Work Map + open questions. The spoken
+   debrief asks the ranked gaps (guardrails first, then boundary values like "exactly
+   €5,000"), then the teach-back. Counters show answered / deferred / unresolved. The
+   expert fixes or removes rules — every rule shows her exact words — and confirms.
+   Only confirmed rules ever reach the tutor.
+3. **Train** — a new hire works INV-5001 (€7,200 milling head, never shown). Wrong
+   account → Save blocks, the coaching card shows Sabine's words + screenshot, the tutor
+   asks why. A hints-off case follows; the mastery card reports per rule: correct
+   independently / with help / practice next.
+4. **The signature proof** — click *Threshold proof*: Sabine says "Actually, it's 4,000
+   now." Work Map v2 supersedes v1 (both never active), and a €4,500 invoice is now
+   blocked **with no code change**. The training screen shows "Trained on Work Map v2".
+
+## The five judge questions
+
+| Question | Answer | See it |
+|---|---|---|
+| When to ask | Only when: an unasked event waits, no input ≥2.5s, no speech ≥1.5s, agent not talking, ≥20s since the last question. Keystrokes send activity so it never barges in. | Type 10s → silence; stop → one question |
+| What to ask | Only why / limits / exceptions / "when would you stop and ask someone" — never what's visible; one per pause; topics never repeat (enforced in code, not just prompt). | The capex question, then a guardrail question |
+| When it has understood | Every gap ends answered, deferred to a named person, or unresolved — counters on screen — then a confirmed teach-back. Deferrals never count as answered. | Review mode counters + teach-back |
+| Did the new hire learn | Unseen €7,200 case caught before save, then a hints-off solo pass; mastery card per rule. One case = a result, not mastery. | Train mode |
+| Trust | Off the record stops mic+frames+events (drops unsent); IBAN masked on-canvas before frames leave the browser; keys server-side; signed URLs; fictional-data banner. | Flip the switch mid-task; open any screenshot |
+
+## Rule checks are code, not model judgment
+
+`src/lib/rules.ts` is a deterministic evaluator over a closed field vocabulary
+(amount, itemType, supplier, month, entity, account, assetNumber, approval,
+paymentStatus; ops eq/gt/lt/in/missing). Anything the extractor can't express in that
+vocabulary becomes an open question — never a guessed rule. Unknown situations say
+"Sabine didn't cover this. Check with a person before saving." and name an escalation
+only if she taught one.
+
+**Tests:** `npm test` — 27 unit tests: the brief's full test table (R1/R2/R3, the €4,800
+non-praise case, exactly-€5,000, Kessler March, unknown supplier), the v1→v2 threshold
+supersession, vocabulary clamping, pause/cooldown/topic-suppression timing.
 
 ## Deploy
-`npx vercel` → add the same env vars in the Vercel dashboard → test mic and screen share on the https URL. API keys stay server-side; the browser only ever receives a short-lived signed URL.
+
+`npx vercel` → add the same env vars in the Vercel dashboard → test mic + tab-share on
+the https URL in a private window.

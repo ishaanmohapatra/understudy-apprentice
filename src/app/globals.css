@@ -191,3 +191,29 @@ button { font: inherit; cursor: pointer; }
 .e.expert { border-color: var(--ok); } .e.expert .k { color: var(--ok); }
 .e.agent { border-color: var(--accent); } .e.agent .k { color: var(--accent); }
 .e.system .k { color: var(--warn); }
+
+/* ---------- three-mode additions ---------- */
+.u-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 2px rgba(27,27,34,0.04); }
+.panel { padding: 18px 20px; overflow: auto; position: relative; }
+.panel h2 { margin: 0 0 10px; font-size: 16px; }
+.panel h3 { margin: 14px 0 8px; font-size: 14px; }
+.stepper { display: flex; gap: 6px; }
+.stepper .step { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--mute); font-size: 13.5px; }
+.stepper .step.now { border-color: var(--accent); background: #edebfb; color: var(--accent); font-weight: 600; }
+.stepper .step:disabled { opacity: 0.45; cursor: default; }
+.cards { display: flex; flex-direction: column; gap: 10px; }
+.u-card.step { padding: 10px 12px; display: grid; grid-template-columns: 110px 1fr; gap: 12px; border-radius: 10px; }
+.u-card.step img { width: 110px; border-radius: 6px; border: 1px solid var(--line); }
+.u-card.step h4 { margin: 0 0 4px; font-size: 13.5px; }
+.u-card.step .meta { color: var(--mute); font-size: 12.5px; }
+.noframe { width: 110px; height: 64px; border-radius: 6px; background: #f2f2f2; display: flex; align-items: center; justify-content: center; color: var(--mute); font-size: 11px; }
+.u-card.rule { padding: 10px 12px; border-radius: 10px; }
+.u-card.rule .head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 4px; }
+.u-card.rule blockquote { margin: 6px 0 0; padding-left: 10px; border-left: 3px solid var(--accent); font-style: italic; color: var(--mute); font-size: 13px; }
+.u-card.rule img { max-width: 200px; border-radius: 6px; border: 1px solid var(--line); margin-top: 6px; display: block; }
+.u-card.coach { border-color: var(--warn); background: var(--warnbg); padding: 12px 14px; border-radius: 12px; }
+.u-card.coach h4 { margin: 0 0 6px; color: var(--warn); font-size: 14px; }
+.u-card.coach blockquote { margin: 8px 0; padding-left: 10px; border-left: 3px solid var(--warn); font-style: italic; }
+.u-card.coach .esc { font-size: 13px; color: var(--mute); }
+.u-card.coach img { width: 100%; border-radius: 8px; border: 1px solid var(--line); margin-top: 8px; }
+.ro { font-size: 14.5px; }
